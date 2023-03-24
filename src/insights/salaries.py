@@ -1,5 +1,6 @@
 from typing import Union, List, Dict
 from src.insights.jobs import read
+import sys
 
 
 def get_max_salary(path: str) -> int:
@@ -14,21 +15,15 @@ def get_max_salary(path: str) -> int:
 
 
 def get_min_salary(path: str) -> int:
-    """Get the minimum salary of all jobs
-
-    Must call `read`
-
-    Parameters
-    ----------
-    path : str
-        Must be passed to `read`
-
-    Returns
-    -------
-    int
-        The minimum salary paid out of all job opportunities
-    """
-    raise NotImplementedError
+    jobs_data = read(path)
+    # source: https://www.delftstack.com/pt/howto/python/python-max-int/
+    min_salary = sys.maxsize
+    for job in jobs_data:
+        salary = job['min_salary']
+        if salary != '' and not salary.isalpha():
+            if int(salary) < min_salary:
+                min_salary = int(salary)
+    return min_salary
 
 
 def matches_salary_range(job: Dict, salary: Union[int, str]) -> bool:
