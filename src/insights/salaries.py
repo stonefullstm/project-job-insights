@@ -3,6 +3,15 @@ from src.insights.jobs import read
 import sys
 
 
+def is_int(value):
+    is_valid = True
+    if type(value) == str:
+        is_valid = value.isnumeric()
+    elif type(value) != int:
+        is_valid = False
+    return is_valid
+
+
 def get_max_salary(path: str) -> int:
     jobs_data = read(path)
     max_salary = 0
@@ -27,29 +36,15 @@ def get_min_salary(path: str) -> int:
 
 
 def matches_salary_range(job: Dict, salary: Union[int, str]) -> bool:
-    """Checks if a given salary is in the salary range of a given job
-
-    Parameters
-    ----------
-    job : dict
-        The job with `min_salary` and `max_salary` keys
-    salary : int
-        The salary to check if matches with salary range of the job
-
-    Returns
-    -------
-    bool
-        True if the salary is in the salary range of the job, False otherwise
-
-    Raises
-    ------
-    ValueError
-        If `job["min_salary"]` or `job["max_salary"]` doesn't exists
-        If `job["min_salary"]` or `job["max_salary"]` aren't valid integers
-        If `job["min_salary"]` is greather than `job["max_salary"]`
-        If `salary` isn't a valid integer
-    """
-    raise NotImplementedError
+    if 'min_salary' not in job or 'max_salary' not in job:
+        raise ValueError('min_salary or max_salary does not exist')
+    max_salary = job['max_salary']
+    min_salary = job['min_salary']
+    if not is_int(max_salary) or not is_int(min_salary) or not is_int(salary):
+        raise ValueError('Some value is a invalid integer')
+    if min_salary > max_salary:
+        raise ValueError('min salary is greater then max salary')
+    return int(min_salary) <= int(salary) <= int(max_salary)
 
 
 def filter_by_salary_range(
